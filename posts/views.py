@@ -35,7 +35,7 @@ def search(request):
     keyword = request.GET.get("q", None)
     posts = Post.objects.select_related("author", "group").all()
     if keyword:
-        posts = posts.filter(text__contains=keyword)      
+        posts = posts.filter(text__icontains=keyword)      
     else:
         posts = None
 
