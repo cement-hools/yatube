@@ -9,15 +9,9 @@ from django.urls import reverse_lazy
 
 #  импортируем класс формы, чтобы сослаться на неё во view-классе
 from .forms import CreationForm
-import datetime as dt
 
 
 class SignUp(CreateView):
     form_class = CreationForm
     success_url = reverse_lazy("login") #  где login — это параметр "name" в path()
     template_name = "signup.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["year"] = dt.datetime.now().year
-        return context

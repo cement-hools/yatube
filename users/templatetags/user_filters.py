@@ -11,3 +11,13 @@ def addclass(field, css):
 # синтаксис @register... , под которой описан класс addclass() - 
 # это применение "декораторов", функций, обрабатывающих функции
 # мы скоро про них расскажем. Не бойтесь соб@к
+
+@register.filter 
+def uglify(value):
+    res = [
+        x.lower() 
+        if i % 2 != 0 
+        else x.upper() 
+        for i, x in enumerate(value)
+    ]
+    return ''.join(res)
