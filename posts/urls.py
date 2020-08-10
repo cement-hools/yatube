@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("group/<slug:slug>/", views.group_posts, name="group"),
-    path("test", views.test, name="test"),
-    path("search", views.search, name="search"),
+    path("test/", views.test, name="test"),
+    path("search/", views.search, name="search"),
+    path("new/", views.new_post, name="new_post"),
 ]
