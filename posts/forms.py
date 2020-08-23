@@ -10,3 +10,4 @@ class PostForm(forms.ModelForm):
         fields = ("group", "text",)  
         labels = {"text": "Введите текст", "group": "Выберите группу"}
         help_texts = {"text": "Текст поста", "group": "Из уже существующих"}  
+        
