@@ -10,15 +10,15 @@ from .models import Group, Post, User
 
 
 def index(request):
-        post_list = Post.objects.all()
-        paginator = Paginator(post_list, 10)  # показывать по 10 записей на странице.
-        page_number = request.GET.get("page")  # переменная в URL с номером запрошенной страницы
-        page = paginator.get_page(page_number)  # получить записи с нужным смещением
-        return render(
-            request,
-            "index.html",
-            {"page": page, "paginator": paginator}
-       )
+    post_list = Post.objects.all()
+    paginator = Paginator(post_list, 10)  # показывать по 10 записей на странице.
+    page_number = request.GET.get("page")  # переменная в URL с номером запрошенной страницы
+    page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    return render(
+        request,
+        "index.html",
+        {"page": page, "paginator": paginator}
+    )
 
 
 def group_posts(request, slug):
@@ -32,6 +32,51 @@ def group_posts(request, slug):
         "group.html", 
         {"group": group, "page": page, "paginator": paginator}
         )
+
+
+def profile(request, username):
+    author = get_object_or_404(User, username=username)
+    post_list = author.posts.all()
+    paginator = Paginator(post_list, 3)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    len_posts = len(post_list)
+    context = {
+        "author": author,
+        'page': page,
+        'paginator': paginator,
+        'len_posts': len_posts
+        }
+    return render(request, 'profile.html', context)
+
+
+ 
+def post_view(request, username, post_id):
+        post = Post.objects.get(id=post_id)
+        author = get_object_or_404(User, username=username)
+        post_list = author.posts.all()
+        len_posts = len(post_list)
+        context = {
+            "username": username,
+            "post": post,
+            "len_posts": len_posts,
+            }
+        return render(request, 'post.html', context)
+
+@login_required
+def post_edit(request, username, post_id):
+        # тут тело функции. Не забудьте проверить, 
+        # что текущий пользователь — это автор записи.
+        # В качестве шаблона страницы редактирования укажите шаблон создания новой записи
+        # который вы создали раньше (вы могли назвать шаблон иначе)
+        post = get_object_or_404(Post, pk=post_id)
+        form = PostForm(request.POST or None, instance=post)
+        if post.author != request.user:
+            return redirect(f"/{username}/{post_id}/")
+        if form.is_valid():
+            form.save()
+            return redirect(f"/{username}/")
+        return render(request, 'new_post.html', {"form": form, "post": post})
 
 
 @login_required
