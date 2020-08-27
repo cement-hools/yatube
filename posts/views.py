@@ -38,16 +38,16 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
     paginator = Paginator(post_list, 3)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     len_posts = len(post_list)
     context = {
         "author": author,
-        'page': page,
-        'paginator': paginator,
-        'len_posts': len_posts
+        "page": page,
+        "paginator": paginator,
+        "len_posts": len_posts
         }
-    return render(request, 'profile.html', context)
+    return render(request, "profile.html", context)
 
 
  
@@ -61,7 +61,7 @@ def post_view(request, username, post_id):
             "post": post,
             "len_posts": len_posts,
             }
-        return render(request, 'post.html', context)
+        return render(request, "post.html", context)
 
 @login_required
 def post_edit(request, username, post_id):
@@ -76,7 +76,7 @@ def post_edit(request, username, post_id):
         if form.is_valid():
             form.save()
             return redirect(f"/{username}/")
-        return render(request, 'new_post.html', {"form": form, "post": post})
+        return render(request, "new_post.html", {"form": form, "post": post})
 
 
 @login_required
