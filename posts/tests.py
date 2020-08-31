@@ -106,4 +106,10 @@ class TestUser(TestCase):
         ]
         self.edit_post(post_text)
         self.checking_text_in_pages(post_text, url_list)
+
+    def test_404_page(self):
+        """возвращает ли сервер код 404, если страница не найдена."""
+        response = self.client.get("/404/")
+        self.assertEqual(response.status_code, 404) 
+
         

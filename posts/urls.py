@@ -8,6 +8,8 @@ urlpatterns = [
     path("posts_in_range_date/", views.posts_in_range_date, name="test"),
     path("search/", views.search, name="search"),
     path("new/", views.new_post, name="new_post"),
+    # path("404/", views.page_not_found, name="page_not_found"),
+    # path("500/", views.server_error, name="server_error"),
     # Профайл пользователя
     path("<str:username>/", views.profile, name="profile"),
     # Просмотр записи

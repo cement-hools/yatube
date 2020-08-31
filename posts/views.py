@@ -9,6 +9,23 @@ from .forms import PostForm
 from .models import Group, Post, User
 
 
+def page_not_found(request, exception):
+    """Страница не найдена"""
+    # Переменная exception содержит отладочную информацию, 
+    # выводить её в шаблон пользователской страницы 404 мы не станем
+    return render(
+        request, 
+        "misc/404.html", 
+        {"path": request.path}, 
+        status=404
+    )
+
+
+def server_error(request):
+    """Ошибка сервера"""
+    return render(request, "misc/500.html", status=500)
+
+
 def index(request):
     """Главная страница"""
     post_list = Post.objects.all()
@@ -73,7 +90,11 @@ def post_edit(request, username, post_id):
     В качестве шаблона страницы редактирования укажите шаблон создания новой записи
     который вы создали раньше (вы могли назвать шаблон иначе)"""
     post = get_object_or_404(Post, pk=post_id)
-    form = PostForm(request.POST or None, instance=post)
+    form = PostForm(
+        request.POST or None, 
+        files=request.FILES or None, 
+        instance=post
+    )
     if post.author != request.user:
         return redirect(f"/{username}/{post_id}/")
     if form.is_valid():

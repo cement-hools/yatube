@@ -4,7 +4,7 @@
 {% block content %}
 {% load user_filters %}
 
-    <form method="post" action="{% if post %}{% url 'post_edit' post.author.username post.pk %}{% else %}{% url 'new_post' %}{% endif %}">
+    <form method="post" enctype="multipart/form-data" action="{% if post %}{% url 'post_edit' post.author.username post.pk %}{% else %}{% url 'new_post' %}{% endif %}">
         {% csrf_token %}
 
         {% for field in form %}
