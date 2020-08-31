@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ post.author.get_full_name }} пост от {{post.pub_date}}{% endblock %}
+{% block title %}{{ username.get_full_name }} пост от {{post.pub_date}}{% endblock %}
 {% block content %}
 
 <main role="main" class="container">
@@ -9,11 +9,11 @@
                 <div class="card-body">
                     <div class="h2">
                         <!-- Имя автора -->
-                        {{ post.author.get_full_name }}
+                        {{ username.get_full_name }}
                     </div>
                     <div class="h3 text-muted">
                         <!-- username автора -->
-                        @{{post.author}}
+                        @{{username}}
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
@@ -40,14 +40,14 @@
                 <div class="card-body">
                     <p class="card-text">
                         <!-- Ссылка на страницу автора в атрибуте href; username автора в тексте ссылки -->
-                        <a href="/{{ post.author }}/"><strong class="d-block text-gray-dark">@{{ post.author }}</strong></a>
+                        <a href="/{{ username }}/"><strong class="d-block text-gray-dark">@{{ username }}</strong></a>
                         <!-- Текст поста -->
                         {{post.text|linebreaksbr}}
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group ">
                             <!-- Ссылка на редактирование, показывается только автору записи -->
-                            <a class="btn btn-sm text-muted" href="{% url 'post' post.author.username post.pk %}edit" role="button">Редактировать</a>
+                            <a class="btn btn-sm text-muted" href="{% url 'post' username post.pk %}edit" role="button">Редактировать</a>
                         </div>
                         <!-- Дата публикации  -->
                         <small class="text-muted">{{post.pub_date}}</small>

@@ -10,6 +10,7 @@ from .models import Group, Post, User
 
 
 def index(request):
+    """Главная страница"""
     post_list = Post.objects.all()
     paginator = Paginator(post_list, 10)  # показывать по 10 записей на странице.
     page_number = request.GET.get("page")  # переменная в URL с номером запрошенной страницы
@@ -22,6 +23,7 @@ def index(request):
 
 
 def group_posts(request, slug):
+    """Все посты выбранной группы"""
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
     paginator = Paginator(post_list, 10)
@@ -35,6 +37,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Страница профиля"""
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
     paginator = Paginator(post_list, 3)
@@ -49,69 +52,69 @@ def profile(request, username):
         }
     return render(request, "profile.html", context)
 
-
  
 def post_view(request, username, post_id):
-        post = Post.objects.get(id=post_id)
-        author = get_object_or_404(User, username=username)
-        post_list = author.posts.all()
-        len_posts = len(post_list)
-        context = {
-            "username": username,
-            "post": post,
-            "len_posts": len_posts,
-            }
-        return render(request, "post.html", context)
+    """Просмотр поста"""
+    post = Post.objects.get(id=post_id)
+    author = get_object_or_404(User, username=username)
+    post_list = author.posts.all()
+    len_posts = len(post_list)
+    context = {
+        "username": post.author,
+        "post": post,
+        "len_posts": len_posts,
+        }
+    return render(request, "post.html", context)
+
 
 @login_required
 def post_edit(request, username, post_id):
-        # тут тело функции. Не забудьте проверить, 
-        # что текущий пользователь — это автор записи.
-        # В качестве шаблона страницы редактирования укажите шаблон создания новой записи
-        # который вы создали раньше (вы могли назвать шаблон иначе)
-        post = get_object_or_404(Post, pk=post_id)
-        form = PostForm(request.POST or None, instance=post)
-        if post.author != request.user:
-            return redirect(f"/{username}/{post_id}/")
-        if form.is_valid():
-            form.save()
-            return redirect(f"/{username}/")
-        return render(request, "new_post.html", {"form": form, "post": post})
+    """Не забудьте проверить, что текущий пользователь — это автор записи.
+    В качестве шаблона страницы редактирования укажите шаблон создания новой записи
+    который вы создали раньше (вы могли назвать шаблон иначе)"""
+    post = get_object_or_404(Post, pk=post_id)
+    form = PostForm(request.POST or None, instance=post)
+    if post.author != request.user:
+        return redirect(f"/{username}/{post_id}/")
+    if form.is_valid():
+        form.save()
+        return redirect(f"/{username}/{post_id}/")
+    return render(request, "new_post.html", {"form": form, "post": post})
 
 
 @login_required
 def new_post(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            return redirect("index")
-    form = PostForm()    
+    """Создание нового поста"""
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect("index")
     return render(request, "new_post.html", {"form": form})
 
 
-def test(request):
+def posts_in_range_date(request):
+    """РЕВЬЮЕР НЕ ОБРАЩАЙ ВНИМАНИЕ НА ЭТУ ФУНКЦИЮ (Это для примера) 
+    Функция для проверки поиска по ключевому слову и календарному интервалу"""
     author = get_object_or_404(User, username="leo")
     keyword = "утро"
     start_date = datetime.date(1854, 7, 7)
     end_date = datetime.date(1854, 7, 21)
     posts = Post.objects.filter(
-        text__contains=keyword
-        ).filter(
-        pub_date__range=(start_date, end_date)
-        ).filter(
-            author=author
-        )
+        text__icontains=keyword,
+        pub_date__range=(start_date, end_date),
+        author=author,
+    )
     return render(request, "index.html", {"posts": posts})
 
 
 def search(request):
+    """Поиск по тексту постов"""
     keyword = request.GET.get("q", None)
     posts = Post.objects.select_related("author", "group").all()
     if keyword:
         posts = posts.filter(text__icontains=keyword)      
     else:
-        posts = None
+        posts = posts.none()
     return render(request, "search.html", {"posts": posts, "keyword": keyword})    
