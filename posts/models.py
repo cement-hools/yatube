@@ -43,3 +43,7 @@ class Post(models.Model):
         
     class Meta:
         ordering = ("-pub_date",)
+
+
+class Comment:
+    pass

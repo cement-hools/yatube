@@ -69,8 +69,8 @@ class TestPostEditView:
 
         assert 'form' in response.context, \
             'Проверьте, что передали форму `form` в контекст страницы `/<username>/<post_id>/edit/`'
-        assert len(response.context['form'].fields) == 2, \
-            'Проверьте, что в форме `form` на страницу `/<username>/<post_id>/edit/` 2 поля'
+        assert len(response.context['form'].fields) == 3, \
+            'Проверьте, что в форме `form` на страницу `/<username>/<post_id>/edit/` 3 поля'
         assert 'group' in response.context['form'].fields, \
             'Проверьте, что в форме `form` на странице `/new/` есть поле `group`'
         assert type(response.context['form'].fields['group']) == forms.models.ModelChoiceField, \

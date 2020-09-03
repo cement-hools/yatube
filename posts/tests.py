@@ -112,4 +112,41 @@ class TestUser(TestCase):
         response = self.client.get("/404/")
         self.assertEqual(response.status_code, 404) 
 
+    def test_img_in_post_page(self):
+        """проверяют страницу конкретной записи с картинкой: на странице есть тег <img>"""
+        # response = self.login_client.post(
+        #     reverse("new_post"),
+        #     {
+        #         "text": "post with image",
+        #         "group": self.group.id,
+        #         "image": "posts/file.jpg"
+        #         },
+        #     follow=True
+        # )
+        # post_img = Post.objects.create(
+        #     text=("post with image"), 
+        #     author=self.user, 
+        #     group=self.group,
+        #     image="posts/file.jpg",
+        # )
+        post_text = "test post"
+        url_list = [
+            reverse("index"),
+            reverse("profile", args=["sarah"]),
+            reverse("post", args=["sarah", 5]),
+        ]
+        response = self.login_client.post(
+            reverse("new_post"),
+            {"text": post_text, "group": self.group.id, "image": "posts/file.jpg"}, 
+            follow=True
+        )       
+        self.checking_text_in_pages("post_textvcb", url_list)
         
+
+    def test_img_in_index_page(self):
+        """проверяют, что на главной странице  пост с картинкой отображается корректно, с тегом <img>"""
+        pass
+
+    def test_img_in_post_page(self):
+        """проверяют, что срабатывает защита от загрузки файлов не-графических форматов"""
+        pass

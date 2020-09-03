@@ -16,7 +16,7 @@ class TestNewView:
             response = user_client.get('/new/')
         assert response.status_code != 404, 'Страница `/new/` не найдена, проверьте этот адрес в *urls.py*'
         assert 'form' in response.context, 'Проверьте, что передали форму `form` в контекст страницы `/new/`'
-        assert len(response.context['form'].fields) == 2, 'Проверьте, что в форме `form` на страницу `/new/` 2 поля'
+        assert len(response.context['form'].fields) == 3, 'Проверьте, что в форме `form` на страницу `/new/` 3 поля'
         assert 'group' in response.context['form'].fields, \
             'Проверьте, что в форме `form` на странице `/new/` есть поле `group`'
         assert type(response.context['form'].fields['group']) == forms.models.ModelChoiceField, \
