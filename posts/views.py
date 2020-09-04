@@ -5,8 +5,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import PostForm
-from .models import Group, Post, User
+from .forms import PostForm, CommentForm
+from .models import Group, Post, User, Comment
 
 
 def page_not_found(request, exception):
@@ -76,10 +76,14 @@ def post_view(request, username, post_id):
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
     len_posts = len(post_list)
+    form = CommentForm(request.POST or None)
+    items = post.comments.all()
     context = {
         "username": post.author,
         "post": post,
         "len_posts": len_posts,
+        "form": form,
+        "items": items,
         }
     return render(request, "post.html", context)
 
@@ -114,6 +118,19 @@ def new_post(request):
         return redirect("index")
     return render(request, "new_post.html", {"form": form})
 
+
+def add_comment(request, username, post_id):
+    """Добавление комментария"""
+    form = CommentForm(request.POST or None)
+    post = get_object_or_404(Post, pk=post_id)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post = post
+        comment.save()
+        return redirect("post", username=username, post_id=post_id)
+    return redirect("post", username=username, post_id=post_id)    
+    
 
 def posts_in_range_date(request):
     """РЕВЬЮЕР НЕ ОБРАЩАЙ ВНИМАНИЕ НА ЭТУ ФУНКЦИЮ (Это для примера) 

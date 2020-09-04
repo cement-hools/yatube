@@ -28,7 +28,8 @@ class Post(models.Model):
         Group, 
         on_delete=models.SET_NULL, 
         blank=True,
-        null=True, related_name="posts", 
+        null=True, 
+        related_name="posts", 
         verbose_name="Группа",
         help_text="Выберите группу"
     )
@@ -45,5 +46,19 @@ class Post(models.Model):
         ordering = ("-pub_date",)
 
 
-class Comment:
-    pass
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name="comments"
+        )
+    author = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="comments"
+    )    
+    text = models.TextField()
+    created = models.DateTimeField("date published", auto_now_add=True)
+
+    class Meta:  
+        ordering = ("created",)
