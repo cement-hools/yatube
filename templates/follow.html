@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 {% load cache %}
-{% block title %} Последние обновления {% endblock %}
+{% block title %} Статьи авторов на которых вы подписаны {% endblock %}
 
 {% block content %}
 {% include "includes/menu.html" %}
 <div class="container">
-    <h1> Последние обновления на сайте</h1>
+    <h1>Статьи избранных авторов</h1>
     <!-- Вывод ленты записей -->
-        
-        {% for post in page %}
-        <!-- Вот он, новый include! -->
-            {% include "post_item.html" with post=post %}
-        {% endfor %}
-        
-   
+    {% for post in page %}
+    <!-- Вот он, новый include! -->
+    {% include "post_item.html" with post=post %}
+    {% endfor %}
+
 
 </div>
 

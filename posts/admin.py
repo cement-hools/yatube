@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Post, Group, Comment
+from .models import Post, Group, Comment, Follow
 
 class PostAdmin(admin.ModelAdmin):
     # перечисляем поля, которые должны отображаться в админке
@@ -18,3 +18,4 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Post, PostAdmin)
 admin.site.register(Group)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Follow)

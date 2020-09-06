@@ -110,8 +110,8 @@ class TestUser(TestCase):
     def test_404_page(self):
         """возвращает ли сервер код 404, если страница не найдена."""
         response = self.client.get("/404/")
-        self.assertEqual(response.status_code, 404) 
-
+        self.assertEqual(response.status_code, 404)
+        
     def test_img_in_post_page(self):
         """проверяют страницу конкретной записи с картинкой: на странице есть тег <img>"""
         # response = self.login_client.post(
@@ -129,6 +129,7 @@ class TestUser(TestCase):
         #     group=self.group,
         #     image="posts/file.jpg",
         # )
+        self.assertEqual(1, 200) 
         post_text = "test post"
         url_list = [
             reverse("index"),
@@ -147,6 +148,6 @@ class TestUser(TestCase):
         """проверяют, что на главной странице  пост с картинкой отображается корректно, с тегом <img>"""
         pass
 
-    def test_img_in_post_page(self):
+    def test_img_file_upload_protection(self):
         """проверяют, что срабатывает защита от загрузки файлов не-графических форматов"""
         pass
