@@ -30,6 +30,9 @@ class TestUser(TestCase):
         self.login_client.force_login(self.user)
         cache.clear()
     
+    def tearDown(self):
+        pass
+
     def add_new_post(self, text):
         """Добавление нового поста"""
         response = self.login_client.post(
@@ -293,10 +296,8 @@ class TestUser(TestCase):
             {"text": post_text, "group": self.group.id},
             follow=True
         )
-        response = self.client.get(reverse("index"))
-        print(response)
-        response = self.client.get(reverse("group", args=[self.group.slug]))
-        print(response)
+        print()
+        print("test_page")
         for url in url_list:
             cache.clear()
             response = self.client.get(url)
