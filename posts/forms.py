@@ -19,8 +19,11 @@ class PostForm(forms.ModelForm):
             "image": "Выберите изображение"
             }  
 
+
 class CommentForm(forms.ModelForm):
-    text = forms.CharField(widget=forms.Textarea(attrs={"rows": 5, "cols": 10}))
+    text = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 5, "cols": 10})
+        )
     
     class Meta:
         model = Comment

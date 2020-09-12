@@ -26,6 +26,7 @@ def server_error(request):
     """Ошибка сервера"""
     return render(request, "misc/500.html", status=500)
 
+
 @cache_page(20)
 def index(request):
     """Главная страница"""
@@ -59,7 +60,6 @@ def profile(request, username):
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     my_user = request.user
-    #following = Follow.objects.filter(user=my_user, author=author)
     following = Follow.objects.filter(author=author).count()
     follower = Follow.objects.filter(user=author).count()
     context = {
@@ -78,15 +78,19 @@ def post_view(request, username, post_id):
     post = Post.objects.get(id=post_id)
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
-    len_posts = len(post_list)
     form = CommentForm(request.POST or None)
     items = post.comments.all()
+    following = Follow.objects.filter(author=author).count()
+    follower = Follow.objects.filter(user=author).count()
     context = {
+        "author": author,
         "username": post.author,
         "post": post,
-        "len_posts": len_posts,
+        "posts": post_list,
         "form": form,
         "items": items,
+        "following": following,
+        "follower": follower,
         }
     return render(request, "post.html", context)
 
@@ -113,7 +117,10 @@ def post_edit(request, username, post_id):
 @login_required
 def new_post(request):
     """Создание нового поста"""
-    form = PostForm(request.POST or None)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None, 
+        )
     if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -122,6 +129,7 @@ def new_post(request):
     return render(request, "new_post.html", {"form": form})
 
 
+@login_required
 def add_comment(request, username, post_id):
     """Добавление комментария"""
     form = CommentForm(request.POST or None)
@@ -137,19 +145,18 @@ def add_comment(request, username, post_id):
 
 @login_required
 def follow_index(request):
-    # информация о текущем пользователе доступна в переменной request.user
-    # following = request.user.follower.all()
-    # following_list=[item.author for item in following]
-    # post_list = Post.objects.filter(author__in=following_list)
+    """Страница из избранными авторами"""
     post_list = Post.objects.filter(author__following__user=request.user)
-    paginator = Paginator(post_list, 10)  # показывать по 10 записей на странице.
-    page_number = request.GET.get("page")  # переменная в URL с номером запрошенной страницы
-    page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    paginator = Paginator(post_list, 10)  
+    page_number = request.GET.get("page")  
+    page = paginator.get_page(page_number) 
     context = {"page": page, "paginator": paginator}
     return render(request, "follow.html", context)
 
+
 @login_required
 def profile_follow(request, username):
+    """Добавить в избранное"""
     my_user = request.user
     my_author = get_object_or_404(User, username=username)
     authors = Follow.objects.filter(user=my_user, author=my_author)
@@ -161,14 +168,13 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Убрать из подписок"""
     my_user = request.user
     my_author = get_object_or_404(User, username=username)
     authors = Follow.objects.filter(user=my_user, author=my_author)
     if authors.exists():
         authors.delete()
-        return redirect("profile", username=username)
     return redirect("profile", username=username)
-
 
 
 def posts_in_range_date(request):

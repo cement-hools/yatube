@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Group(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=20, unique=True)
     description = models.TextField(null=True)   
 
     def __str__(self):
@@ -65,5 +65,16 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="follower"
+        )
+    author = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="following"
+        )
+
+    class Meta:  
+        unique_together = ("user", "author")
