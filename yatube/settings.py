@@ -26,6 +26,7 @@ SECRET_KEY = 'az!w2yq)w(own@+!kgniuv3gfvvdd0tv-0uiwh9hb*h=il*^(9'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+        "*",
         "localhost",
         "127.0.0.1",
         "[::1]",
@@ -135,8 +136,8 @@ STATIC_URL = "/static/"
 # задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Login
 LOGIN_URL = "/auth/login/"
